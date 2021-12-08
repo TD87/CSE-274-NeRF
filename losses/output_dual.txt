@@ -1,0 +1,51 @@
+Starting Epoch 59
+Loss after epoch 59: 0.09191344606876373	Time Taken: 158.20027685165405
+Starting Epoch 60
+Loss after epoch 60: 0.09174605605006218	Time Taken: 154.81620812416077
+Starting Epoch 61
+Loss after epoch 61: 0.09164848843216897	Time Taken: 154.66732120513916
+Starting Epoch 62
+Loss after epoch 62: 0.0915453290939331	Time Taken: 155.4595456123352
+Starting Epoch 63
+Loss after epoch 63: 0.0913999393582344	Time Taken: 155.021497964859
+Starting Epoch 64
+Loss after epoch 64: 0.09126575207710266	Time Taken: 154.87330436706543
+Starting Epoch 65
+Loss after epoch 65: 0.09119342887401581	Time Taken: 154.63687133789062
+Starting Epoch 66
+Loss after epoch 66: 0.09107553777098655	Time Taken: 154.87264823913574
+Starting Epoch 67
+Loss after epoch 67: 0.09102118331193924	Time Taken: 154.7648787498474
+Starting Epoch 68
+Loss after epoch 68: 0.09089504972100258	Time Taken: 154.54492926597595
+Starting Epoch 69
+Loss after epoch 69: 0.09087326645851135	Time Taken: 154.56553483009338
+Starting Epoch 70
+Loss after epoch 70: 0.09070573392510414	Time Taken: 155.0486969947815
+Starting Epoch 71
+Loss after epoch 71: 0.09064709639549255	Time Taken: 154.89166045188904
+Starting Epoch 72
+Loss after epoch 72: 0.09058187597990036	Time Taken: 155.1478350162506
+Starting Epoch 73
+Loss after epoch 73: 0.09049296581745148	Time Taken: 155.1262879371643
+Starting Epoch 74
+Loss after epoch 74: 0.09043953734636306	Time Taken: 155.79618167877197
+Starting Epoch 75
+Loss after epoch 75: 0.09034348621964455	Time Taken: 155.45394349098206
+Starting Epoch 76
+Loss after epoch 76: 0.09029494920372963	Time Taken: 155.04233932495117
+Starting Epoch 77
+Loss after epoch 77: 0.09020061567425727	Time Taken: 155.03440642356873
+Starting Epoch 78
+Loss after epoch 78: 0.09008703032135963	Time Taken: 154.7679045200348
+Starting Epoch 79
+Loss after epoch 79: 0.09002623468637466	Time Taken: 155.36008977890015
+Starting Epoch 80
+Loss after epoch 80: 0.08996826341748237	Time Taken: 154.87551546096802
+Starting Epoch 81
+Loss after epoch 81: 0.08991502025723458	Time Taken: 154.81767344474792
+Starting Epoch 82
+Loss after epoch 82: 0.0898403032720089	Time Taken: 155.03558039665222
+Starting Epoch 83
+Loss after epoch 83: 0.08980752536654472	Time Taken: 155.01438975334167
+Starting Epoch 84
