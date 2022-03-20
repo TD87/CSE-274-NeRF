@@ -1,4 +1,4 @@
-import cv2, time, imageio, json
+import cv2, time, imageio, json, time
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -24,8 +24,9 @@ def get_rays(i, j, focal, pose):
     camera_matrix = pose[:3, :3]
     transformed_i = (i - (0.5 * DIMENSIONS)) / focal
     transformed_j = (j - (0.5 * DIMENSIONS)) / focal
-    direction = torch.tensor([transformed_i, -transformed_j, -1], dtype = torch.float)
+    direction = torch.tensor([transformed_i, transformed_j, 1], dtype = torch.float)
     ray_direction = camera_matrix @ direction
+    ray_direction = ray_direction / torch.norm(ray_direction)
     return (ray_origin, ray_direction)
 
 # Generate samples along the ray
@@ -60,12 +61,14 @@ def render_rgb_depth(model, ray_flat, t_vals, ray_views, num_samples):
     transmittance = torch.cumprod(exp_term, dim = -1)
     weights = alpha * transmittance
     rgb = torch.sum(weights.unsqueeze(-1) * rgb, dim = -2)
-    return rgb, weights
+    acc = torch.sum(weights, dim = -1)
+    rgb = rgb + (1 - acc.unsqueeze(-1))
+    # depth = torch.sum(weights * t_vals, dim = -1)
+    return rgb, weights, predictions
 
 # Sample fine samples from coarse samples weights
 def sample_pdf(bins, weights):
     # According to (https://github.com/yenchenlin/nerf-pytorch/blob/master/run_nerf_helpers.py)
-    bins = torch.cat([torch.zeros_like(bins[..., :1]), bins], dim = -1)
     weights = weights + 1e-5 # prevent nans
     pdf = weights / torch.sum(weights, -1, keepdim=True)
     cdf = torch.cumsum(pdf, -1)

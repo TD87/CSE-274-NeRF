@@ -1,6 +1,6 @@
-# CSE274 Project: NeRF
+# CSE291 (8) Project: NeRF
 
-Implementation of Neural Radiance Fields (NeRF) for the CSE274 project.
+Implementation of Neural Radiance Fields (NeRF) for the CSE291 (8) project.
 
 ## Instructions
 
@@ -11,13 +11,10 @@ Implementation of Neural Radiance Fields (NeRF) for the CSE274 project.
 
  - `train.py`: Contains training code
  - `test.py`: Contains inference code
- - `train_dual.py`: Contains training code for dual network configuration (separate networks for coarse and fine)
- - `test_dual.py`: Contains inference code for dual network configuration
  - `dataloader.py`: Contains the dataloaders
  - `model.py`: Contains the NeRF model
- -  `utils.py`: Contains utility functions for generating rays and volume rendering
+ -  `utils.py`: Contains utility functions for generating rays and ray marching
  - `params.py`: Contains parameters
- - `checkpoints`: Contains model checkpoints of all the experiments
- - `dataset`: Contains the dataset
- - `losses`: Contains losses of all the experiments
- - `results`: Contains result images of all the experiments
+ - `checkpoints`: Contains model checkpoints of the experiments
+ - `results`: Contains result images of the experiments
+ - `plot`: Contains code related to plotting losses and PSNR scores

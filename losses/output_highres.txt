@@ -1,9 +1,0 @@
-Starting Epoch 1
-Loss after epoch 1: 8.370467581269057e-06	Time Taken: 5711.628276348114
-Starting Epoch 2
-Loss after epoch 2: 8.35135442091939e-06	Time Taken: 5668.96107840538
-Starting Epoch 3
-Loss after epoch 3: 8.35135442091939e-06	Time Taken: 5552.380963802338
-Starting Epoch 4
-Loss after epoch 4: 1.670270884183878e-05	Time Taken: 7103.2205765247345
-Starting Epoch 5

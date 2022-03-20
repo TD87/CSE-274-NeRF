@@ -8,86 +8,60 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 
 from params import *
-from utils import *
+from utils import *       
 
 # Load Data
 class CustomDataset(Dataset):
-    def __init__(self, train = True):
+    def __init__(self, train = None):
         self.train = train
-        if self.train:
-            data = np.load('./dataset/tiny_nerf_data.npz')
-            self.focal = float(data['focal'])
-            self.images = data['images']
-            self.poses = data['poses']
-        else:
-            self.root = './dataset/lego/val/r_'
-            self.load_images(self.root)
-            file = json.load(open('./dataset/lego/transforms_val.json', 'r'))
-            self.focal = (0.5 * DIMENSIONS) / np.tan(0.5 * file['camera_angle_x'])
-            self.poses = file['frames']
+        self.iroot = './bottles/rgb/'
+        self.proot = './bottles/pose/'
+        self.focal = 875.0 / (800 / DIMENSIONS)
+        if self.train is None:
+            self.poses = [self.load_txt(self.proot + '2_test_0000.txt'), self.load_txt(self.proot + '2_test_0016.txt'),
+                          self.load_txt(self.proot + '2_test_0055.txt'), self.load_txt(self.proot + '2_test_0093.txt'),
+                          self.load_txt(self.proot + '2_test_0160.txt')]
+        elif self.train:
+            self.load_data(self.iroot + '0_train_', self.proot + '0_train_')
+        elif not self.train:   
+            self.load_data(self.iroot + '1_val_', self.proot + '1_val_')
+            
+    def load_txt(self, path):
+        pose = []
+        with open(path, 'r') as file:
+            for line in file.readlines():
+                pose.append([])
+                for num in line.split():
+                    pose[-1].append(float(num))
+        pose = np.array(pose)
+        return pose  
 
-    def load_images(self, root):
-        self.images = []
+    def load_data(self, iroot, proot):
+        self.images, self.poses = [], []
         for i in range(100):
-            self.images.append(cv2.imread(root + str(i) + '.png'))
+            im = cv2.imread(iroot + str(i).zfill(4) + '.png')
+            if DIMENSIONS < 800:
+                im = cv2.resize(im, (DIMENSIONS, DIMENSIONS), cv2.INTER_AREA)
+            self.images.append(im)
+            self.poses.append(self.load_txt(proot + str(i).zfill(4) + '.txt'))
         self.images = np.array(self.images)
+        self.poses = np.array(self.poses)
 
     def __len__(self):
-        return 100 * DIMENSIONS * DIMENSIONS
-
-    def __getitem__(self, index):
-        i, j = ((index // DIMENSIONS) % DIMENSIONS, index % DIMENSIONS)
-        if self.train:
-            pose = torch.tensor(self.poses[index // (DIMENSIONS * DIMENSIONS)], dtype = torch.float)
-            img = torch.tensor(self.images[index // (DIMENSIONS * DIMENSIONS), min(i, 99), min(j, 99), :],
-                               dtype = torch.float)
+        if self.train is None:
+            return 5 * DIMENSIONS * DIMENSIONS
         else:
-            pose = torch.tensor(self.poses[index // (DIMENSIONS * DIMENSIONS)]['transform_matrix'], dtype = torch.float)
-            img = torch.tensor(self.images[index // (DIMENSIONS * DIMENSIONS), min(i, 799), min(j, 799), :],
-                               dtype = torch.float) / 255
-        ray = map_fn(i, j, self.focal, pose)
-        return {'I': img, 'R': ray}
-
-# Load Video Data
-class VideoDataset(Dataset):
-    def __init__(self):
-        data = np.load('./dataset/tiny_nerf_data.npz')
-        self.focal = float(data['focal'])
-
-    def __len__(self):
-        return 120 * DIMENSIONS * DIMENSIONS
-
-    def get_translation_t(self, t):
-        return torch.tensor([
-                    [1, 0, 0, 0],
-                    [0, 1, 0, 0],
-                    [0, 0, 1, t],
-                    [0, 0, 0, 1]], dtype = torch.float)
-
-    def get_rotation_phi(self, phi):
-        return torch.tensor([
-                    [1, 0, 0, 0],
-                    [0, np.cos(phi), -np.sin(phi), 0],
-                    [0, np.sin(phi), np.cos(phi), 0],
-                    [0, 0, 0, 1]], dtype = torch.float)
-
-    def get_rotation_theta(self, theta):
-        return torch.tensor([
-                    [np.cos(theta), 0, -np.sin(theta), 0],
-                    [0, 1, 0, 0],
-                    [np.sin(theta), 0, np.cos(theta), 0],
-                    [0, 0, 0, 1]], dtype = torch.float)
-
-    def pose_spherical(self, theta, phi, t):
-        c2w = self.get_translation_t(t)
-        c2w = self.get_rotation_phi(phi / 180.0 * np.pi) @ c2w
-        c2w = self.get_rotation_theta(theta / 180.0 * np.pi) @ c2w
-        c2w = torch.tensor([[-1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]], dtype = torch.float) @ c2w
-        return c2w
+            return 10000
 
     def __getitem__(self, index):
+        if self.train is not None:
+            index = np.random.randint(100 * DIMENSIONS * DIMENSIONS)
         i, j = ((index // DIMENSIONS) % DIMENSIONS, index % DIMENSIONS)
-        pose = self.pose_spherical(3 * (index // (DIMENSIONS * DIMENSIONS)), -30.0, 4.0)
-        img = torch.tensor([0.0, 0.0, 0.0])
+        pose = torch.tensor(self.poses[index // (DIMENSIONS * DIMENSIONS)], dtype = torch.float)
+        if self.train is not None:
+            img = torch.tensor(self.images[index // (DIMENSIONS * DIMENSIONS), min(j, DIMENSIONS - 1), 
+                                           min(i, DIMENSIONS - 1), :], dtype = torch.float) / 255
+        else:
+            img = 0
         ray = map_fn(i, j, self.focal, pose)
         return {'I': img, 'R': ray}
